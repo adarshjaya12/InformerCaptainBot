@@ -43,7 +43,8 @@ class Config:
 
 
 def parse_config(f):
-    data = yaml.safe_load(f)
+    with open(f, 'r') as stream:
+        data = yaml.safe_load(stream)
     refresh_interval = data['refresh_interval'] if 'refresh_interval' in data else 1
 
     max_price = data['max_price'] if 'max_price' in data else None

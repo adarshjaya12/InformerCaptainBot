@@ -1,4 +1,4 @@
-from scraper.common import ScrapeResult, Scraper, ScraperFactory
+from source.scraper.common import ScrapeResult, Scraper, ScraperFactory
 
 
 class CostcoScrapeResult(ScrapeResult):

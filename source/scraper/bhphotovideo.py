@@ -1,6 +1,6 @@
 import re
 
-from scraper.common import ScrapeResult, Scraper, ScraperFactory
+from source.scraper.common import ScrapeResult, Scraper, ScraperFactory
 
 
 class BHPhotoVideoScrapeResult(ScrapeResult):

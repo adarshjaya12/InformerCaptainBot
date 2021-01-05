@@ -39,28 +39,6 @@ class SeleniumDriver(Driver):
         self.selenium_path = pathlib.Path('selenium').resolve()
         self.selenium_path.mkdir(exist_ok=True)
         self.driver_path = self.selenium_path / 'chromedriver'
-        driver_paths = [
-            '/usr/bin/chromedriver',
-            '/usr/local/bin/chromedriver',
-        ]
-        for driver_path in driver_paths:
-            if os.path.exists(driver_path):
-                # chromedriver needs to be patched to avoid detection, see:
-                # https://stackoverflow.com/questions/33225947/can-a-website-detect-when-you-are-using-selenium-with-chromedriver
-                shutil.copy(driver_path, self.driver_path)
-                with open(driver_path, 'rb') as f:
-                    variables = set([m.decode('ascii') for m in re.findall(b'cdc_[^\' ]+', f.read())])
-                    for v in variables:
-                        replacement = ''.join(random.choice(string.ascii_letters) for i in range(len(v)))
-                        logging.debug(f'found variable in chromedriver: {v}, replacing with {replacement}')
-                        cmd = ['perl', '-pi', '-e', f's/{v}/{replacement}/g', self.driver_path]
-                        r = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=False, text=True)
-                        if r.returncode != 0:
-                            logging.warning(f'chromedriver patch failed: {r.stdout}')
-                break
-
-        if not self.driver_path.is_file():
-            raise Exception(f'Selenium Chrome driver not found at {" or ".join(driver_paths)}')
 
         self.options = webdriver.ChromeOptions()
         self.options.page_load_strategy = 'eager'
@@ -77,7 +55,7 @@ class SeleniumDriver(Driver):
     def get(self, url) -> HttpGetResponse:
         # headless chromium crashes somewhat regularly...
         # for now, we will start a fresh instance every time
-        with webdriver.Chrome(self.driver_path, options=self.options) as driver:
+        with webdriver.Chrome(executable_path="C:\\WebDrivers\\chromedriver.exe", options=self.options) as driver:
             driver.get(str(url))
 
             try:

@@ -7,8 +7,7 @@ random.seed()
 
 
 class Engine:
-    def __init__(self, alerters, config, scrapers):
-        self.alerters = alerters
+    def __init__(self,  config, scrapers):
         self.refresh_interval = config.refresh_interval
         self.max_price = config.max_price
         self.scheduler = sched.scheduler()
@@ -90,8 +89,6 @@ class Engine:
         elif not currently_in_stock and result.has_phrase('are you a human'):
 
             s.logger.error('got "are you a human" prompt')
-            self.alerters(subject='Something went wrong',
-                          content=f'You need to answer this CAPTCHA and restart this script: {result.url}')
             sys.exit(1)
 
         else:
@@ -99,9 +96,8 @@ class Engine:
 
     def send_alert(self, s, result, reason):
         s.logger.info(reason)
-        self.alerters(subject=result.alert_subject, content=result.alert_content)
 
 
-def hunt(alerters, config, scrapers):
-    engine = Engine(alerters, config, scrapers)
+def hunt(config, scrapers):
+    engine = Engine( config, scrapers)
     engine.run()
